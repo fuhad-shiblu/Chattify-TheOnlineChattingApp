@@ -6,11 +6,15 @@ import ResetPassword from './Pages/ResetPassword'
 import LoginPage from './Pages/LoginPage'
 import LayoutOne from './Layout/LayoutOne'
 import RegisterPage from './Pages/RegisterPage'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const route = createBrowserRouter(
     createRoutesFromElements(
       <Route>
+        <Route path='/' element={<LayoutOne/>}>
+        <Route index element={<Home/>}/>
+        </Route>
         <Route path='/sign-in' element={<LoginPage/>}/>
         <Route path='*' element={<PageNotFound/>}/>
         <Route path='/sign-up' element={<RegisterPage/>}/>
@@ -21,6 +25,7 @@ function App() {
 
   return (
     <>
+    <ToastContainer />
     <RouterProvider router={route}/>
     </>
   )

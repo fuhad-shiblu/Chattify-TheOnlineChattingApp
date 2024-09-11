@@ -2,5 +2,5 @@
     box-shadow: 0px 0px 35px 3px rgba(0,0,0,0.75);
 }
 .RCformBox{
-    @apply backdrop-blur-lg w-[500px] p-5
+    @apply backdrop-blur-lg w-[500px] p-5;
 }
