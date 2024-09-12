@@ -1,17 +1,21 @@
 import Lottie from 'lottie-react'
 import registeranim from '../../public/Animation/Regisanim.json'
 import '../Components/RegisterCompo.css'
-import { MdEmail } from "react-icons/md";
-import { FaKey } from "react-icons/fa";
-import { Link } from 'react-router-dom';
-import { FaUser } from "react-icons/fa";
-import { useState } from 'react';
-import { IoEye } from "react-icons/io5";
-import { IoEyeOff } from "react-icons/io5";
+import { MdEmail } from "react-icons/md"
+import { FaKey } from "react-icons/fa"
+import { Link, useNavigate } from 'react-router-dom'
+import { FaUser } from "react-icons/fa"
+import { IoEye } from "react-icons/io5"
+import { IoEyeOff } from "react-icons/io5"
 import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"
+import { useState, CSSProperties } from "react";
+import { BeatLoader } from 'react-spinners'
 
 const RegisterCompo = () => {
+  //========================== Firebase variables part
+  const auth = getAuth();
   //========================== Hide/Show Password
   const [showPass , setShowPass] = useState(false)
   const handleShowPass = ()=>{
@@ -22,14 +26,16 @@ const RegisterCompo = () => {
     setShowPass2(!showPass2)
   }
   //========================== State Part
-  const [name , showName]         = useState('')
-  const [nameErr , showNameErr]   = useState('')
-  const [email , showEmail]       = useState('')
-  const [emailErr , showEmailErr] = useState('')
-  const [pass , letPass]         = useState('')
-  const [passErr , letPassErr]   = useState('')
+  const [name , showName]              = useState('')
+  const [nameErr , showNameErr]        = useState('')
+  const [email , showEmail]            = useState('')
+  const [emailErr , showEmailErr]      = useState('')
+  const [pass , letPass]               = useState('')
+  const [passErr , letPassErr]         = useState('')
   const [conPass , conLetPass]         = useState('')
   const [conPassErr , conLetPassErr]   = useState('')
+  const [loading , setLoading]         = useState(false)
+  const navigate                            = useNavigate()
 
   //========================== Function Part
   const handleName = (e)=>{
@@ -60,17 +66,55 @@ const RegisterCompo = () => {
     }if(!conPass){
       conLetPassErr('Confirm Password')
     }else{
-      toast.success('Account Created Successfully', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-        });
+      setLoading(true)
+          createUserWithEmailAndPassword(auth, email, pass)
+      .then((userCredential) => {
+        setLoading(false)
+        toast.success('Registration has been successfull', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
+          navigate('/sign-in')
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        setLoading(false)
+        if(errorCode == 'auth/weak-password'){
+          letPassErr('Password must be at least 6 characters')
+        }
+        if(errorCode == 'auth/email-already-in-use'){
+          toast.error('E-Mail already in used', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+            transition: Bounce,
+            });
+        }
+      });
+      // toast.success('Account Created Successfully', {
+      //   position: "top-center",
+      //   autoClose: 5000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      //   transition: Bounce,
+      //   });
     }
   }
   return (
@@ -123,7 +167,14 @@ const RegisterCompo = () => {
                 </div>
                 <p className='text-red-600 text-md mt-2'>{conPassErr}</p>
                 <br />
+                {
+                loading ?
+                <div className='flex justify-center items-center w-full p-3 bg-black text-white rounded-[15px] text-xl font-semibold active:scale-[1.1] transition-all'>  
+                <BeatLoader color='#fff' size='24px' />
+                </div>
+                :
                 <button className='w-full p-3 bg-black text-white rounded-[15px] text-xl font-semibold active:scale-[1.1] transition-all' type='submit'>Create Account</button>
+                }
                 <div className="flex justify-between items-center mt-5">
                     <p className='text-xl text-white font-normal'>Already have an Account?</p>
                     <Link className='text-xl text-[#c0c0c0] font-normal' to='/sign-in'>Log In here</Link>

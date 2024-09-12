@@ -6,9 +6,10 @@ import { FaKey } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { IoEye } from "react-icons/io5";
 import { IoEyeOff } from "react-icons/io5";
-import { useState } from 'react';
 import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { useState, CSSProperties } from "react";
+import { BeatLoader } from 'react-spinners'
 
 const LoginCompo = () => {
   //========================= Hide/Show Password
@@ -21,6 +22,7 @@ const LoginCompo = () => {
   const [emailErr , setEmailErr] = useState('')
   const [pass , setPass]         = useState('')
   const [passErr , setPassErr]   = useState('')
+  const [loading , setLoading]   = useState(false)
   //========================= Function Part
   const handleEmail = (e)=>{
     setEmail(e.target.value)
@@ -38,6 +40,7 @@ const LoginCompo = () => {
     }else if(!pass){
       setPassErr('Please Enter your Password')
     }else{
+      setLoading(false)
       toast.success('Log In Success', {
         position: "top-center",
         autoClose: 5000,
@@ -85,7 +88,14 @@ const LoginCompo = () => {
                 </div>
                 <p className='text-red-600 text-md mt-2'>{passErr}</p>
                 <br />
+                {
+                  loading ?
+                <div className='flex justify-center items-center w-full p-3 bg-black text-white rounded-[15px] text-xl font-semibold active:scale-[1.1] transition-all'>  
+                <BeatLoader color='#fff' size='24px' />
+                </div>
+                :
                 <button className='w-full p-3 bg-black text-white rounded-[15px] text-xl font-semibold active:scale-[1.1] transition-all' type='submit'>Log In</button>
+                }
                 <Link className='flex justify-end mt-3 text-black font-bold' to='/reset-password'>Forgot Password?</Link>
                 <div className="flex justify-between items-center mt-5">
                     <p className='text-xl text-white'>Don't have an Account?</p>

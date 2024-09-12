@@ -7,6 +7,7 @@ import LoginPage from './Pages/LoginPage'
 import LayoutOne from './Layout/LayoutOne'
 import RegisterPage from './Pages/RegisterPage'
 import { ToastContainer } from 'react-toastify'
+import database from './firebase.config'
 
 function App() {
   const route = createBrowserRouter(
